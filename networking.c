@@ -33,8 +33,10 @@ void initNetwork(int argc, char **argv) {
 		}
 		networkActive = 1;
 		phone.fd = socket(AF_INET, SOCK_STREAM, 0);
-		struct sockaddr_in addr = {.sin_family = AF_INET, .sin_port = port, .sin_addr.s_addr = inet_addr(argv[3])};
+		struct sockaddr_in addr = {.sin_family = AF_INET, .sin_port = port, .sin_addr.s_addr = htonl(INADDR_ANY)};
 		bind(phone.fd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
+		addr.sin_addr.s_addr = inet_addr(argv[3]);
+		connect(phone.fd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
 	}
 	fcntl(phone.fd, F_SETFL, O_NONBLOCK);
 	phone.avatar = addBox();
