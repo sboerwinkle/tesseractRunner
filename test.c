@@ -41,7 +41,7 @@ static char lookingAround = 0;
 
 box* addBox(){
 	numBoxen++;
-	if(numBoxen>boxCapacity){
+	if (numBoxen>boxCapacity){
 		boxCapacity += 5;
 		boxen = realloc(boxen, boxCapacity*sizeof(box));
 	}
@@ -91,7 +91,7 @@ void playerYawChange(player* who, int dir){
 
 void normalize3d(double* w){
 	double dist = 1.0/sqrt(w[0]*w[0] + w[1]*w[1] + w[2]*w[2]);
-	if(dist == 0) return;
+	if (dist == 0) return;
 	int i = 0;
 	for(; i < 3; i++){
 		w[i] *= dist;
@@ -137,7 +137,7 @@ void doPlayerPhysics(player* who){
 	double dy = who->desiredVel[1] - who->vel[1];
 	double dz = who->desiredVel[2] - who->vel[3];
 	double mag = sqrt(dx*dx + dy*dy + dz*dz);
-	if(mag > GROUNDFRIC){
+	if (mag > GROUNDFRIC){
 		mag = GROUNDFRIC/mag;
 		dx *= mag;
 		dy *= mag;
@@ -165,38 +165,38 @@ void doPlayerPhysics(player* who){
 			intStart = 0;
 			intEnd = minTime;
 			for(j=0; j<4; j++){
-				if(who->vel[j]<0){
+				if (who->vel[j]<0){
 					sizeSum = -boxen[i].size[j]-playerSize;
 				}else{
 					sizeSum = boxen[i].size[j]+playerSize;
-					if(who->vel[j] == 0){
-						if(abs(boxen[i].pos[j]-who->pos[j]) < sizeSum) continue;
+					if (who->vel[j] == 0){
+						if (abs(boxen[i].pos[j]-who->pos[j]) < sizeSum) continue;
 						numDims2 = 0;
 						break;
 					}
 				}
 				tmp1 = 1000*(boxen[i].pos[j]-who->pos[j]-sizeSum)/who->vel[j];
-				if(tmp1>intStart){
-					if(tmp1>intEnd){
+				if (tmp1>intStart){
+					if (tmp1>intEnd){
 						numDims2 = 0;
 						break;
 					}
 					intStart = tmp1;
 					dims2[0] = j;
 					numDims2 = 1;
-				}else if(tmp1 == intStart){
+				}else if (tmp1 == intStart){
 					dims2[numDims2++] = j;
 				}
 				tmp1 = 1000*(boxen[i].pos[j]-who->pos[j]+sizeSum)/who->vel[j];
-				if(tmp1<intEnd){
-					if(tmp1<intStart){
+				if (tmp1<intEnd){
+					if (tmp1<intStart){
 						numDims2 = 0;
 						break;
 					}
 					intEnd = tmp1;
 				}
 			}
-			if(numDims2 == 0 || (intStart==minTime && numDims2>=numDims)) continue; // Prioritize running into fewer dimensions at once, due to the tiled floor issue
+			if (numDims2 == 0 || (intStart==minTime && numDims2>=numDims)) continue; // Prioritize running into fewer dimensions at once, due to the tiled floor issue
 			minTime = intStart;
 			numDims = numDims2;
 			memcpy(dims, dims2, numDims);
@@ -215,36 +215,36 @@ void doPlayerPhysics(player* who){
 
 static void interpretKeys(player *me, uint16_t moveKeys) {
 	me->desiredVel[0] = me->desiredVel[1] = me->desiredVel[2] = 0;
-	if(moveKeys&UP){
+	if (moveKeys&UP){
 		me->desiredVel[0] += MOVESPD*me->moveVec[0];
 		me->desiredVel[1] += MOVESPD*me->moveVec[1];
 		me->desiredVel[2] += MOVESPD*me->moveVec[2];
 	}
-	if(moveKeys&DOWN){
+	if (moveKeys&DOWN){
 		me->desiredVel[0] -= MOVESPD*me->moveVec[0];
 		me->desiredVel[1] -= MOVESPD*me->moveVec[1];
 		me->desiredVel[2] -= MOVESPD*me->moveVec[2];
 	}
-	if(moveKeys&LEFT){
+	if (moveKeys&LEFT){
 		me->desiredVel[0] -= MOVESPD*me->view[1][0];
 		me->desiredVel[1] -= MOVESPD*me->view[1][1];
 	}
-	if(moveKeys&RIGHT){
+	if (moveKeys&RIGHT){
 		me->desiredVel[0] += MOVESPD*me->view[1][0];
 		me->desiredVel[1] += MOVESPD*me->view[1][1];
 	}
-	if(moveKeys&TOP){
+	if (moveKeys&TOP){
 		me->desiredVel[0] -= MOVESPD*me->view[3][0];
 		me->desiredVel[1] -= MOVESPD*me->view[3][1];
 		me->desiredVel[2] -= MOVESPD*me->view[3][3];
 	}
-	if(moveKeys&BOTTOM){
+	if (moveKeys&BOTTOM){
 		me->desiredVel[0] += MOVESPD*me->view[3][0];
 		me->desiredVel[1] += MOVESPD*me->view[3][1];
 		me->desiredVel[2] += MOVESPD*me->view[3][3];
 	}
-	if(moveKeys&CHARMED && me->canJump) me->vel[2] += 10000;
-	if(moveKeys&STRANGE) me->vel[2] -= MOVESPD;
+	if (moveKeys&CHARMED && me->canJump) me->vel[2] += 10000;
+	if (moveKeys&STRANGE) me->vel[2] -= MOVESPD;
 }
 
 int main(int argc, char** argv){
@@ -264,7 +264,7 @@ int main(int argc, char** argv){
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 	width2 = height2 = 400;
 	window = SDL_CreateWindow("4D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width2*2, height2*2, SDL_WINDOW_OPENGL);
-	if(window == NULL){
+	if (window == NULL){
 		fputs("No SDL2 window.\n", stderr);
 		fputs(SDL_GetError(), stderr);
 		SDL_Quit();
@@ -324,43 +324,44 @@ int main(int argc, char** argv){
 			viewSpaceBoundingLines[4*i+j].major = 0;
 		}
 	}
-//	SDL_ShowCursor(0);
-//	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_SetRelativeMouseMode(1);
 	while(running){
 		clock_gettime(CLOCK_MONOTONIC, &otherTime);
 		long int sleep = 50000000 - (otherTime.tv_nsec-lastTime.tv_nsec+1000000000*(otherTime.tv_sec-lastTime.tv_sec));
-		if(sleep > 0){
+		if (sleep > 0){
 			t.tv_nsec = sleep;
 			nanosleep(&t, NULL);
 		}
 		clock_gettime(CLOCK_MONOTONIC, &lastTime);
 		SDL_Event evnt;
 		while(SDL_PollEvent(&evnt)){
-			if(evnt.type == SDL_QUIT) running = 0;
-			else if(evnt.type == SDL_MOUSEWHEEL){
+			if (evnt.type == SDL_QUIT) running = 0;
+			else if (evnt.type == SDL_MOUSEBUTTONDOWN) {
+				SDL_SetRelativeMouseMode(1);
+			} else if (evnt.type == SDL_MOUSEWHEEL){
 					me.fitch += evnt.wheel.y;
-					if(me.fitch > MAXFITCH) me.fitch = MAXFITCH;	
-					else if(me.fitch < -MAXFITCH) me.fitch = -MAXFITCH;
+					if (me.fitch > MAXFITCH) me.fitch = MAXFITCH;	
+					else if (me.fitch < -MAXFITCH) me.fitch = -MAXFITCH;
 			}
-			else if(evnt.type == SDL_MOUSEMOTION){
+			else if (evnt.type == SDL_MOUSEMOTION){
+				if (!SDL_GetRelativeMouseMode()) continue;
 				if (lookingAround) {
 					yaw3d -= evnt.motion.xrel*.004;
 					pitch3d -= evnt.motion.yrel*.004;
-					if(yaw3d > M_PI) yaw3d -= 2*M_PI;
-					else if(yaw3d < -M_PI) yaw3d += 2*M_PI;
-					if(pitch3d > M_PI_2) pitch3d = M_PI_2;
-					else if(pitch3d < -M_PI_2) pitch3d = -M_PI_2;
+					if (yaw3d > M_PI) yaw3d -= 2*M_PI;
+					else if (yaw3d < -M_PI) yaw3d += 2*M_PI;
+					if (pitch3d > M_PI_2) pitch3d = M_PI_2;
+					else if (pitch3d < -M_PI_2) pitch3d = -M_PI_2;
 				} else {
 					me.yaw += evnt.motion.xrel*.004;
 					me.pitch -= evnt.motion.yrel*.004;
-					if(me.yaw > M_PI) me.yaw -= 2*M_PI;
-					else if(me.yaw < -M_PI) me.yaw += 2*M_PI;
-					if(me.pitch > M_PI_2) me.pitch = M_PI_2;
-					else if(me.pitch < -M_PI_2) me.pitch = -M_PI_2;
+					if (me.yaw > M_PI) me.yaw -= 2*M_PI;
+					else if (me.yaw < -M_PI) me.yaw += 2*M_PI;
+					if (me.pitch > M_PI_2) me.pitch = M_PI_2;
+					else if (me.pitch < -M_PI_2) me.pitch = -M_PI_2;
 				}
 			}
-			else if(evnt.type == SDL_KEYDOWN || evnt.type == SDL_KEYUP){
+			else if (evnt.type == SDL_KEYDOWN || evnt.type == SDL_KEYUP){
 				int thing = 0;
 				switch(evnt.key.keysym.sym){
 					case SDLK_s:
@@ -407,10 +408,13 @@ int main(int argc, char** argv){
 						me.pos[2] =
 						me.pos[3] = 0;
 						break;
+					case SDLK_ESCAPE:
+						SDL_SetRelativeMouseMode(0);
+						break;
 					default:
 						break;
 				}
-				if(evnt.type == SDL_KEYDOWN)
+				if (evnt.type == SDL_KEYDOWN)
 					moveKeys = moveKeys|thing;
 				else
 					moveKeys = moveKeys&(~thing);
