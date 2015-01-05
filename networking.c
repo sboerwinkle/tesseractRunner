@@ -67,10 +67,12 @@ void netTick() {
 		ret = read(phone.fd, ((char*)pos) + offset, 4*sizeof(int32_t) - offset);
 		if (ret == -1) return;
 		offset += ret;
-		if (offset == 4*sizeof(int32_t)) {
+		if (offset >= 4*sizeof(int32_t)) {
 			for (i = 0; i < 4; i++) {
 				phone.avatar->pos[i] = ntohl(pos[i]);
 			}
+			if (offset > 4*sizeof(int32_t)) puts("network probs...");
+			offset = 0;
 		} else {
 			return;
 		}
