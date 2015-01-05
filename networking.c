@@ -55,10 +55,14 @@ void netTick() {
 	for (; i < 4; i++) {
 		pos[i] = htonl(me.pos[i]);
 	}
-	write(phone.fd, pos, 4*sizeof(int32_t));
+	int ret = 0;
+	while (ret > -1 && ret < 4*sizeof(int32_t)) {
+		//If we don't write all the bytes successfully, TRY AGAIN.
+		ret += write(phone.fd, (char*)pos + ret, 4*sizeof(int32_t) - ret);
+	}
 	static int offset = 0;
 	while (1) {
-		int ret = read(phone.fd, ((char*)pos) + offset, 4*sizeof(int32_t) - offset);
+		ret = read(phone.fd, ((char*)pos) + offset, 4*sizeof(int32_t) - offset);
 		if (ret == -1) return;
 		offset += ret;
 		if (offset == 4*sizeof(int32_t)) {
