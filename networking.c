@@ -10,7 +10,7 @@
 char networkActive = 0;
 
 struct person {
-	box *avatar;
+	int myBox;
 	int fd;
 };
 
@@ -39,16 +39,17 @@ void initNetwork(int argc, char **argv) {
 		connect(phone.fd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
 	}
 	fcntl(phone.fd, F_SETFL, O_NONBLOCK);
-	phone.avatar = addBox();
-	phone.avatar->color = 0x00FFFFFF;
-	phone.avatar->size[0] =
-	phone.avatar->size[1] =
-	phone.avatar->size[2] =
-	phone.avatar->size[3] = playerSize;
-	phone.avatar->pos[0] =
-	phone.avatar->pos[1] =
-	phone.avatar->pos[2] =
-	phone.avatar->pos[3] = 0;
+	box *tmp = addBox();
+	tmp->color = 0x00FFFFFF;
+	tmp->size[0] =
+	tmp->size[1] =
+	tmp->size[2] =
+	tmp->size[3] = playerSize;
+	tmp->pos[0] =
+	tmp->pos[1] =
+	tmp->pos[2] =
+	tmp->pos[3] = 0;
+	phone.myBox = tmp-boxen;
 }
 
 void netTick() {
@@ -68,8 +69,9 @@ void netTick() {
 		if (ret == -1) return;
 		offset += ret;
 		if (offset >= 4*sizeof(int32_t)) {
+			int *tmp = boxen[phone.myBox].pos;
 			for (i = 0; i < 4; i++) {
-				phone.avatar->pos[i] = ntohl(pos[i]);
+				tmp[i] = ntohl(pos[i]);
 			}
 			if (offset > 4*sizeof(int32_t)) puts("network probs...");
 			offset = 0;

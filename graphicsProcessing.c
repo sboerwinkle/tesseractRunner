@@ -250,6 +250,7 @@ void occlude(player *person){
 				if(j!=who2->numFaces) continue; //We broke out of the above loop, which means that the IoD is nothing.
 				if(IoDL != 0 && IoDU != what->len){
 					line* where = allocLine(who);
+					what = who->lines+i;
 					memcpy(where, what, sizeof(line));
 					for(j=0; j<3; j++){
 						where->pos[j] += IoDU*what->dir[j];
@@ -371,11 +372,11 @@ void renderDetails(player *who, box *what, double *coords, int nvi /*non-varying
 	what->size[ix2] /= 2;
 	what->size[ix3] /= 2;
 	for (i = -1; i <= 1; i += 2) {
-		coords[ix1] = tmp + size * i;
+		coords[ix1] = tmp + what->size[ix1] * i;
 		for (j = -1; j <= 1; j += 2) {
-			coords[ix2] = tmp2 + size * j;
+			coords[ix2] = tmp2 + what->size[ix2] * j;
 			for (k = -1; k <= 1; k += 2) {
-				coords[ix3] = tmp3 + size * k;
+				coords[ix3] = tmp3 + what->size[ix3] * k;
 				renderDetails(who, what, coords, nvi, size);
 			}
 		}

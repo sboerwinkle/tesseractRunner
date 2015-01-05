@@ -274,18 +274,18 @@ int main(int argc, char** argv){
 	initGfx();
 	glClearColor(0, 0, 0, 1);
 	int running=1;
-	/*int map[25] = {
+	int map[25] = {
 		9,   9,   9,   9,  17,
 		9,   8,   1,   5,   2,
 		9,   9,   9,   1,   1,
 		9,   1,   9,   1,   1,
-		9,   9,   9,   1,   1};*/
-	int map[25] = {
+		9,   9,   9,   1,   1};
+	/*int map[25] = {
 		1,   1,   1,   1,   1,
 		1,   1,   9,   1,   1,
 		1,   1,   1,   1,   1,
 		1,   1,  15,   7,   3,
-		1,   1,   1,   1,   1};
+		1,   1,   1,   1,   1};*/
 	box *ptr;
 	int i = 0, j, k;
 	for (; i < 5; i++) {
@@ -295,18 +295,19 @@ int main(int argc, char** argv){
 					ptr = addBox();
 					ptr->pos[0]= 80000 - 40000*i;
 					ptr->pos[1]=-80000 + 40000*j;
-					ptr->pos[3]=-80000 + 40000*k;
-					ptr->pos[2]=0;
-					ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 20000;
+					ptr->pos[2]=-80000 + 40000*k;
+					ptr->pos[3]=0;
+					ptr->size[0] = ptr->size[1] = ptr->size[2] = 20000;
+					ptr->size[3] = 50;
 					ptr->color = 0xFF0000FF;
 				}
-				ptr = addBox();
+				/*ptr = addBox();
 				ptr->pos[0]= 80000 - 40000*i;
 				ptr->pos[1]=-80000 + 40000*j;
 				ptr->pos[3]=-80000 + 40000*k;
 				ptr->pos[2]=-40000;
 				ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 20000;
-				ptr->color = 0xFF0000FF;
+				ptr->color = 0xFF0000FF;*/
 			}
 		}
 	}
