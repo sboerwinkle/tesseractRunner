@@ -1,6 +1,7 @@
-Probably get rid of the indicators, they're rather ugly.
+Networking
+-2 players
+-arbitrarily many players
 
-Add more lines. At least one more dimension of density - I ought to be able to see the bounding edges of the thing I'm on.
-Possibly more lines, so I can see the surface I'm standing on.
-
-Can I find a good way to interpolate? I sure hope so! Because I'm pretty sure the math for more lines will prove damn ugly otherwise!!!
+content
+-minecraft-like editing
+-guns?
