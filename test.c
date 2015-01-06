@@ -299,8 +299,7 @@ int main(int argc, char** argv){
 					ptr->pos[1]=-80000 + 40000*j;
 					ptr->pos[2]=-80000 + 40000*k;
 					ptr->pos[3]=0;
-					ptr->size[0] = ptr->size[1] = ptr->size[2] = 20000;
-					ptr->size[3] = 50;
+					ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 20000;
 					ptr->color = 0xFF0000FF;
 				}
 				/*ptr = addBox();
