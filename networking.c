@@ -28,7 +28,7 @@ typedef struct {
 static client *clients;
 
 static client server = {0};
-int whichAvatar = -1;
+int whichAvatar = 0;
 
 static void initAvatar(avatar *a) {
 	box *tmp = addBox();
