@@ -102,7 +102,6 @@ static int32_t pos[8];
 static char flushGarbage(client* who) {
 	int ret;
 	while (who->netGarbage) {
-		printf("%d\n", who->netGarbage);
 		ret = read(who->fd, pos, who->netGarbage);
 		if (ret == -1) return 1;
 		who->netGarbage -= ret;
@@ -136,8 +135,10 @@ static char readPack(client *cli, avatar *a) {
 		ret = read(cli->fd, (char*)pos + offset, packSize - offset);
 	} while(ret != -1 && (offset += ret) != packSize);
 	if (ret == -1) {
-		if (offset)
+		if (offset) {
 			cli->netGarbage = packSize - offset;
+			return 2;
+		}
 		return 1;
 	}
 	int *tmp  = boxen[a->a].pos;
@@ -156,9 +157,12 @@ static void netTickClient() {
 
 	if (flushGarbage(&server)) return; //If there's still junk to read, I'd better not try to interpret it
 
-	do {
+	int ret;
+	while (!(ret = readPack(&server, avatars+whichAvatar))) {
 		whichAvatar = (whichAvatar+1) % numAvatars;
-	} while (!readPack(&server, avatars+whichAvatar));
+	}
+	if (ret == 2)
+		whichAvatar = (whichAvatar+1) % numAvatars;
 }
 
 static void netTickHost() {
