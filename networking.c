@@ -71,7 +71,7 @@ void initNetwork(int argc, char **argv) {
 			int fd = accept(listenSock, NULL, NULL);
 			clients[i].fd = fd;
 			fcntl(fd, F_SETFL, O_NONBLOCK);
-			write(fd, &num, 1);
+			if (1 != write(fd, &num, 1)) puts("What what wh");
 		}
 		close(listenSock);
 	} else {
@@ -86,7 +86,7 @@ void initNetwork(int argc, char **argv) {
 		addr.sin_addr.s_addr = inet_addr(argv[3]);
 		connect(server.fd, (struct sockaddr*)&addr, sizeof(struct sockaddr_in));
 		unsigned char num;
-		read(server.fd, &num, 1);
+		if (1 != read(server.fd, &num, 1)) puts("Wait, wha");
 		numAvatars = num;
 		fcntl(server.fd, F_SETFL, O_NONBLOCK);
 	}
