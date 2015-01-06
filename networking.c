@@ -124,8 +124,8 @@ static void sendPack(int fd) {
 static void loadMyData() {
 	int i = 0;
 	for (; i < 4; i++) {
-		pos[i] = htonl(me.pos[i]);
-		pos[4+i] = htonl(playerSize * 2 * me.view[0][i]);
+		pos[i] = htonl((uint32_t)me.pos[i]);
+		pos[4+i] = htonl((uint32_t)(playerSize * 2 * me.view[0][i]));
 	}
 }
 
@@ -142,8 +142,8 @@ static char readPack(client *cli, avatar *a) {
 	int *tmp2 = boxen[a->b].pos;
 	int i = 0;
 	for (; i < 4; i++) {
-		tmp[i] = ntohl(pos[i]);
-		tmp2[i] = tmp[i] + ntohl(pos[4+i]);
+		tmp[i] = (int32_t)ntohl(pos[i]);
+		tmp2[i] = tmp[i] + (int32_t)ntohl(pos[4+i]);
 	}
 	return 0;
 }
@@ -167,8 +167,8 @@ static void netTickHost() {
 	int j;
 	for (i = 0; i < numAvatars; i++) {
 		for (j = 0; j < 4; j++) {
-			pos[i] = htonl(boxen[avatars[i].a].pos[i]);
-			pos[4+i] = htonl(boxen[avatars[i].b].pos[i] - pos[i]);
+			pos[j] = (int32_t)htonl((uint32_t)boxen[avatars[i].a].pos[j]);
+			pos[4+j] = (int32_t)htonl((uint32_t)(boxen[avatars[i].b].pos[j] - pos[j]));
 		}
 		for (j = 0; j < numAvatars; j++) {
 			if (j==i) continue; // No one needs to know where they themselves are
