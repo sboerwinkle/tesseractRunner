@@ -15,7 +15,7 @@ gfx.o: gfx.c
 graphicsProcessing.o: graphicsProcessing.c test.h graphicsProcessing.h gfx.h
 	$(CSTUFF) -c graphicsProcessing.c
 
-networking.o: networking.c test.h
+networking.o: networking.c networking.h test.h
 	$(CSTUFF) -c networking.c
 
 clean:
