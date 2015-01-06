@@ -132,7 +132,7 @@ static void loadMyData() {
 static char readPack(client *cli, avatar *a) {
 	int ret, offset = 0;
 	do {
-		ret = read(cli->fd, ((char*)pos) + offset, packSize - offset);
+		ret = read(cli->fd, (char*)pos + offset, packSize - offset);
 	} while(ret != -1 && (offset += ret) != packSize);
 	if (ret == -1) {
 		cli->netGarbage = packSize - offset;
@@ -152,7 +152,7 @@ static void netTickClient() {
 	loadMyData();
 	sendPack(server.fd);
 
-	if (flushGarbage(&server)) return; //If there's still junk to read, I'd better not try to interpret it
+	//if (flushGarbage(&server)) return; //If there's still junk to read, I'd better not try to interpret it
 
 	do {
 		whichAvatar = (whichAvatar+1) % numAvatars;
@@ -177,7 +177,7 @@ static void netTickHost() {
 	}
 
 	for (i = 0; i < numAvatars; i++) {
-		if (flushGarbage(clients + i)) continue;
+		//if (flushGarbage(clients + i)) continue;
 		while (!readPack(clients + i, avatars + i));
 	}
 }
