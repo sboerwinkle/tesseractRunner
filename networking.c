@@ -102,6 +102,7 @@ static int32_t pos[8];
 static char flushGarbage(client* who) {
 	int ret;
 	while (who->netGarbage) {
+		printf("%d\n", who->netGarbage);
 		ret = read(who->fd, pos, who->netGarbage);
 		if (ret == -1) return 1;
 		who->netGarbage -= ret;
@@ -135,7 +136,8 @@ static char readPack(client *cli, avatar *a) {
 		ret = read(cli->fd, (char*)pos + offset, packSize - offset);
 	} while(ret != -1 && (offset += ret) != packSize);
 	if (ret == -1) {
-		cli->netGarbage = packSize - offset;
+		if (offset)
+			cli->netGarbage = packSize - offset;
 		return 1;
 	}
 	int *tmp  = boxen[a->a].pos;
@@ -152,7 +154,7 @@ static void netTickClient() {
 	loadMyData();
 	sendPack(server.fd);
 
-	//if (flushGarbage(&server)) return; //If there's still junk to read, I'd better not try to interpret it
+	if (flushGarbage(&server)) return; //If there's still junk to read, I'd better not try to interpret it
 
 	do {
 		whichAvatar = (whichAvatar+1) % numAvatars;
@@ -160,24 +162,24 @@ static void netTickClient() {
 }
 
 static void netTickHost() {
-	loadMyData();
-	int i = 0;
-	for (; i < numAvatars; i++)
-		sendPack(clients[i].fd);
+	int i;
 	int j;
 	for (i = 0; i < numAvatars; i++) {
 		for (j = 0; j < 4; j++) {
 			pos[j] = (int32_t)htonl((uint32_t)boxen[avatars[i].a].pos[j]);
-			pos[4+j] = (int32_t)htonl((uint32_t)(boxen[avatars[i].b].pos[j] - pos[j]));
+			pos[4+j] = (int32_t)htonl((uint32_t)(boxen[avatars[i].b].pos[j] - boxen[avatars[i].a].pos[j]));
 		}
 		for (j = 0; j < numAvatars; j++) {
 			if (j==i) continue; // No one needs to know where they themselves are
 			sendPack(clients[j].fd);
 		}
 	}
+	loadMyData();
+	for (i = 0; i < numAvatars; i++)
+		sendPack(clients[i].fd);
 
 	for (i = 0; i < numAvatars; i++) {
-		//if (flushGarbage(clients + i)) continue;
+		if (flushGarbage(clients + i)) continue;
 		while (!readPack(clients + i, avatars + i));
 	}
 }
