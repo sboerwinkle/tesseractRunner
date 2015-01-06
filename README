@@ -1,0 +1,39 @@
+Hello! You'll probably want to read this!
+
+So, I'm not really expecting anyone but me to be using this project in its current stage. Whatever you just downloaded may not even be in a functional state. Or it may not look very tesseracty, because possibly I have it set up with a pretty flat (3d) world. Whatevs, your problem. However, I'll try to explain a bit.
+
+We're 3D creatures - Our field of view is 2D (it can be represented in a flat picture)
+
+If you've ever read flatland, you'll know that 2D creatures have a 1D field of view - a horizon along which all their 2D photons enter their 2D eyes.
+
+So if you're trying to run around in 4D space, you're gonna need a 3D field of view. A viewspace, if you will.
+
+This viewspace is outlined by the blue cube you see when the program starts. Your brain will try to interpret what's inside of it like a flat picture, as it has been doing for all its life. What's inside isn't flat, however.
+
+If you can still see your mouse, click in the window. 'ESC' releases the mouse, when you need it back.
+
+Stand still (you don't even know how to move yet, ha ha) and, holding 'Q', mouse around. This moves the 3D viewing space around, but your 4D avatar is standing stock-still this entire time. Put it back to a regular orientation (try 'TAB') and move the mouse around without holding 'Q'. This makes your 4D avatar look around. Ooh, pretty. Scrolling also moves your head - in an entirely new dimension. You may not immediately understand what is going on, but if you look at the blue box from the side you'll see that scrolling essentially moves things forward and backward in the box, much like looking left and right moves things left and right.
+
+If you advance towards something ('W') you'll see everything inflate away from the center of your viewing space (assuming you aren't looking too high up or down - vertical mouse motion is still related to the dimension gravity acts in). This makes sense - this is exactly what happens when you advance towards anything in your favorite first person shooter. Everything flys away from the center of the screen.
+
+As you've probably guessed, 'S' goes backwards, 'A' moves left, and 'D' moves right. 'R' and 'F' are also strafe keys - they move you around in the fourth dimension (basically. I mean, if you're looking straight into the fourth dimension (mouse scroll wheel), then obviously 'W' and 'S' move you in the fourth dimension, and 'R' and 'F' (which are still strafe keys) will move you some direction in the three dimensions you know and love)
+
+'SPACE' jumps.
+
+Exercises:
+
++ Move the blue cube so that you're looking at it from the side. If you're on a map with any fourth dimensional pieces, you should be able to move around pretty normally, except scrolling does what you expect mouse-left-and-right-ing to do, and mouse-left-and-right-ing does what scrolling used to. Note that, much like looking up and down, you can only scroll so far in one direction. If you *need* to scoll farther, do what you'd do in Call of Duty if you want to look 'higher' than straight up - spin around and start looking down (scrolling the other way). If there was more than one dimension you could spin all the way around in, things would get tricky. You'd need roll keys, like in flight sims.
+
++ 40 jumping jacks
+
++ 10 push ups
+
++ 3 pull ups
+
+Networking:
+
+I'm workin' on it, I'm workin' on it! But entering too many arguments after './run' should print a brief usage guide.
+
+Questions and Comments:
+
+If you actually care enough, email me at sboerwinkle@gmail.com. If you're reporting a bug in the physics or perspective, you'd better make *DAMN SURE* that it's actually a problem with the game and not with your 3D brain. Also, plz include instructions for how to reproduce the bug.
