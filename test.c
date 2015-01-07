@@ -35,7 +35,8 @@ box* boxen = NULL;
 int boxCapacity = 0;
 int numBoxen = 0;
 
-player me = {.pos = {0, 0, 0, 0}, .vel={0}, .view={{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}}, .yaw = 0, .fitch = 0, .pitch = 0, .canJump = 0};
+int initPos[4] = {-80000, 80000, 0, 0};
+player me = {.vel={0}, .view={{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}}, .yaw = 0, .fitch = 0, .pitch = 0, .canJump = 0};
 
 static char lookingAround = 0;
 
@@ -247,6 +248,49 @@ static void interpretKeys(player *me, uint16_t moveKeys) {
 	if (moveKeys&STRANGE) me->vel[2] -= MOVESPD;
 }
 
+static void make3dMap(int *map, int size) {
+	int offset = 40000 * (size/2);
+	box *ptr;
+	int i = 0, j, k;
+	for (; i < size; i++) {
+		for (j = 0; j < size; j++) {
+			for (k = 0; k < size; k++) {
+				if (map[i * size + j] & (1 << k)) {
+					ptr = addBox();
+					ptr->pos[0]= offset - 40000*i;
+					ptr->pos[1]=-offset + 40000*j;
+					ptr->pos[2]=-offset + 40000*k;
+					ptr->pos[3]=0;
+					ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 20000;
+					ptr->color = 0xFF0000FF;
+				}
+			}
+		}
+	}
+}
+
+static void make4dMap(int **map, int size, int height) {
+	box *ptr;
+	int i = 0, j, k, l;
+	for (; i < size; i++) {
+		for (j = 0; j < size; j++) {
+			for (k = 0; k < height; k++) {
+				for (l = 0; l < size; l++) {
+					if (map[k][i * size + j] & (1 << l)) {
+						ptr = addBox();
+						ptr->pos[0]=-40000*i;
+						ptr->pos[1]=40000*j;
+						ptr->pos[2]=-40000 + 40000*k;
+						ptr->pos[3]=40000*l;
+						ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 20000;
+						ptr->color = 0xFF0000FF;
+					}
+				}
+			}
+		}
+	}
+}
+
 int main(int argc, char** argv){
 	if (argc == 4) {
 		initNetwork(argc, argv);
@@ -257,12 +301,13 @@ int main(int argc, char** argv){
 	initGraphics();
 
 	Uint16 moveKeys = 0;
+	memcpy(me.pos, initPos, sizeof(initPos));
 
 	struct timespec t;
 	t.tv_sec = 0;
 	struct timespec lastTime = {.tv_sec = 0, .tv_nsec = 0};
 	struct timespec otherTime = {.tv_sec = 0, .tv_nsec = 0};
-	
+
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 	width2 = height2 = 400;
 	window = SDL_CreateWindow("4D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width2*2, height2*2, SDL_WINDOW_OPENGL);
@@ -276,43 +321,77 @@ int main(int argc, char** argv){
 	initGfx();
 	glClearColor(0, 0, 0, 1);
 	int running=1;
-	int map[25] = {
+	int tieredMap[25] = {
 		9,   9,   9,   9,  17,
 		9,   8,   1,   5,   2,
 		9,   9,   9,   1,   1,
 		9,   1,   9,   1,   1,
 		9,   9,   9,   1,   1};
-	/*int map[25] = {
+	int floatyMap[25] = {
 		1,   1,   1,   1,   1,
 		1,   1,   9,   1,   1,
 		1,   1,   1,   1,   1,
 		1,   1,  15,   7,   3,
-		1,   1,   1,   1,   1};*/
-	box *ptr;
-	int i = 0, j, k;
-	for (; i < 5; i++) {
-		for (j = 0; j < 5; j++) {
-			for (k = 0; k < 5; k++) {
-				if (map[i * 5 + j] & (1 << k)) {
-					ptr = addBox();
-					ptr->pos[0]= 80000 - 40000*i;
-					ptr->pos[1]=-80000 + 40000*j;
-					ptr->pos[2]=-80000 + 40000*k;
-					ptr->pos[3]=0;
-					ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 20000;
-					ptr->color = 0xFF0000FF;
-				}
-				/*ptr = addBox();
-				ptr->pos[0]= 80000 - 40000*i;
-				ptr->pos[1]=-80000 + 40000*j;
-				ptr->pos[3]=-80000 + 40000*k;
-				ptr->pos[2]=-40000;
-				ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 20000;
-				ptr->color = 0xFF0000FF;*/
-			}
-		}
-	}
-	
+		1,   1,   1,   1,   1};
+	//make3dMap(tieredMap, 5);
+	int base[9] =
+		{7, 7, 7,
+		 7, 7, 7,
+		 7, 7, 7};
+	int wm2[9] =
+		{0, 2, 0,
+		 6, 7, 3,
+		 0, 2, 0};
+	int wm3[9] =
+		{0, 2, 0,
+		 2, 7, 2,
+		 0, 2, 0};
+	int *(wierdMap[3]) = {base, wm2, wm3};
+	//make4dMap(wierdMap, 3, 3);
+	int mm1[9] =
+		{7, 1, 1,
+		 1, 2, 6,
+		 5, 5, 4};
+	int mm2[9] =
+		{0, 6, 6,
+		 6, 5, 1,
+		 0, 2, 2};
+	int mm3[9] =
+		{3, 1, 4,
+		 1, 2, 6,
+		 7, 5, 4};
+	int *(mazeMap[4]) = {base, mm1, mm2, mm3};
+	make4dMap(mazeMap, 3, 4);
+	box *ptr = addBox();
+	ptr->pos[0]=-40000;
+	ptr->pos[1]=25000;
+	ptr->pos[2]=40000;
+	ptr->pos[3]=40000;
+	ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 5000;
+	ptr->color = 0xFFFF40FF;
+	ptr = addBox();
+	ptr->pos[0]=0;
+	ptr->pos[1]=0;
+	ptr->pos[2]=105000;
+	ptr->pos[3]=0;
+	ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 5000;
+	ptr->color = 0x00FF00FF;
+	ptr = addBox();
+	ptr->pos[0]=-15000;
+	ptr->pos[1]=80000;
+	ptr->pos[2]=0;
+	ptr->pos[3]=40000;
+	ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 5000;
+	ptr->color = 0x8000FFFF;
+	ptr = addBox();
+	ptr->pos[0]=-15000;
+	ptr->pos[1]=15000;
+	ptr->pos[2]=40000;
+	ptr->pos[3]=40000;
+	ptr->size[0] = ptr->size[1] = ptr->size[2] = ptr->size[3] = 5000;
+	ptr->color = 0xFFFFFFFF;
+
+	int i, j;
 	for(i = 0; i < 3; i++){
 		for(j=0; j<4; j++){
 			viewSpaceBoundingLines[4*i+j].pos[i] = -1;
@@ -342,7 +421,7 @@ int main(int argc, char** argv){
 				SDL_SetRelativeMouseMode(1);
 			} else if (evnt.type == SDL_MOUSEWHEEL){
 					me.fitch += evnt.wheel.y;
-					if (me.fitch > MAXFITCH) me.fitch = MAXFITCH;	
+					if (me.fitch > MAXFITCH) me.fitch = MAXFITCH;
 					else if (me.fitch < -MAXFITCH) me.fitch = -MAXFITCH;
 			}
 			else if (evnt.type == SDL_MOUSEMOTION){
@@ -401,14 +480,12 @@ int main(int argc, char** argv){
 						if (evnt.type == SDL_KEYUP) break;
 						if (usingCycles)
 							viewCycle = (viewCycle+1) % NUMCYCLES;
-						else 
+						else
 							usingCycles = 1;
 						break;
 					case SDLK_RETURN:
-						me.pos[0] =
-						me.pos[1] =
-						me.pos[2] =
-						me.pos[3] = 0;
+						if (evnt.type == SDL_KEYUP) break;
+						memcpy(me.pos, initPos, sizeof(initPos));
 						break;
 					case SDLK_ESCAPE:
 						SDL_SetRelativeMouseMode(0);
@@ -426,7 +503,7 @@ int main(int argc, char** argv){
 			yaw3d += 0.1*(cycleYaw[viewCycle] - yaw3d);
 			pitch3d += 0.1*(cyclePitch[viewCycle] - pitch3d);
 		}
-		set3dViewVectors();		
+		set3dViewVectors();
 		setPlayerViewVectors(&me);
 		interpretKeys(&me, moveKeys);
 		doPlayerPhysics(&me);

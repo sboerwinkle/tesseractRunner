@@ -215,7 +215,7 @@ void occlude(player *person){
 		for(n = 0; n < numBoxen; n++){
 			if(n==m) continue;
 			who2 = boxen+n;
-			if(isntInFrontOf(who2, who, person)) continue;
+			if(who2->numFaces == 0 /*Narga narga*/|| isntInFrontOf(who2, who, person)) continue;
 			/*if(displayFlag){
 				if(who2 == boxen){
 //					printf("%d <%f %f %f> %f\n", who2->numFaces, who2->normals[0][0], who2->normals[0][1], who->normals[0][2], who2->facePositions[0]);
@@ -534,6 +534,10 @@ void render(player *who, box *what){
 				}
 			}
 		}
+	}
+	if (displayFlag && what == boxen) {
+		printf("%d\n", what->numFaces);
+		displayFlag = 0;
 	}
 }
 
